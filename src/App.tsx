@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import './App.css';
 import { Button, Flex, Input, Table } from 'vienna-ui';
 
@@ -1040,6 +1040,8 @@ interface TableRows {
 
 export default function App() {
   const [tableRows, setTableRows] = useState<TableRows[]>([]);
+  const [searchValue, setSearchValue] = useState('');
+  const [searchTableRows, setSearchTableRows] = useState<TableRows[]>([]);
 
   const fetchData = async () => {
     // const token = 'Y_NbE4mEPuopcu02IlaF';
@@ -1070,17 +1072,33 @@ export default function App() {
     setTableRows(responseItem);
   };
 
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(event.target.value);
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const results = tableRows.filter((item) =>
+      item.name.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    setSearchTableRows(results);
+  }, [searchValue, tableRows]);
+
   return (
     <>
       <Flex gap={'s4'} alignItems={'center'}>
-        <Input style={{ maxWidth: '150px' }} placeholder="Search by name" />
+        <Input
+          style={{ maxWidth: '150px' }}
+          placeholder="Search by name"
+          value={searchValue}
+          onChange={handleChange}
+        />
         <Button>Search</Button>
       </Flex>
-      <Table data={tableRows}>
+      <Table data={searchTableRows}>
         <Table.Column id="id" title="#">
           {(person) => person.id}
         </Table.Column>
