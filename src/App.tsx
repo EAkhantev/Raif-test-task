@@ -1,6 +1,6 @@
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import './App.css';
-import { Button, Flex, Input, Table } from 'vienna-ui';
+import { Input, SortDirection, Table } from 'vienna-ui';
 
 const responseMock: Response = {
   docs: [
@@ -1076,6 +1076,22 @@ export default function App() {
     setSearchValue(event.target.value);
   };
 
+  const onSort = (
+    _event?: FormEvent,
+    data?: { field: string; direction: SortDirection }
+  ) => {
+    if (data) {
+      const dir = data.direction === 'desc' ? 1 : -1;
+      const newData = [...searchTableRows].sort((a, b) => {
+        const nameA = a[data.field as keyof TableRows].toUpperCase();
+        const nameB = b[data.field as keyof TableRows].toUpperCase();
+        const result = nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
+        return result * dir;
+      });
+      setSearchTableRows(newData);
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -1091,49 +1107,50 @@ export default function App() {
 
   return (
     <>
-      <Flex gap={'s4'} alignItems={'center'}>
-        <Input
-          style={{ maxWidth: '150px' }}
-          placeholder="Search by name"
-          value={searchValue}
-          onChange={handleChange}
-        />
-        <Button>Search</Button>
-      </Flex>
-      <Table data={searchTableRows}>
+      <Input
+        style={{ maxWidth: '250px' }}
+        placeholder="Search by name"
+        value={searchValue}
+        onChange={handleChange}
+      />
+      <Table
+        data={searchTableRows}
+        onSort={onSort}
+        sort={{ field: 'name', direction: 'desc' }}
+      >
         <Table.Column id="id" title="#">
-          {(person) => person.id}
+          {(data) => data.id}
         </Table.Column>
-        <Table.Column id="name" title="Имя">
-          {(person) => person.name}
+        <Table.Column id="name" title="Имя" sortable>
+          {(data) => data.name}
         </Table.Column>
         <Table.Column id="gender" title="Пол">
-          {(person) => person.gender}
+          {(data) => data.gender}
         </Table.Column>
         <Table.Column id="race" title="Раса">
-          {(person) => person.race}
+          {(data) => data.race}
         </Table.Column>
         <Table.Column id="realm" title="Королевство">
-          {(person) => person.realm}
+          {(data) => data.realm}
         </Table.Column>
 
         <Table.Column id="spouse" title="Супруг(а)">
-          {(person) => person.spouse}
+          {(data) => data.spouse}
         </Table.Column>
         <Table.Column id="hair" title="Цвет волос">
-          {(person) => person.hair}
+          {(data) => data.hair}
         </Table.Column>
         <Table.Column id="height" title="Рост">
-          {(person) => person.height}
+          {(data) => data.height}
         </Table.Column>
         <Table.Column id="birth" title="Дата рождения">
-          {(person) => person.birth}
+          {(data) => data.birth}
         </Table.Column>
         <Table.Column id="death" title="Дата смерти">
-          {(person) => person.death}
+          {(data) => data.death}
         </Table.Column>
         <Table.Column id="wikiUrl" title="Ссылка">
-          {(person) => person.wikiUrl}
+          {(data) => data.wikiUrl}
         </Table.Column>
       </Table>
     </>
