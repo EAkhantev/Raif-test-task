@@ -1081,9 +1081,11 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const results = tableRows.filter((item) =>
-      item.name.toLowerCase().includes(searchValue.toLowerCase())
-    );
+    const results = tableRows.filter((item) => {
+      const lenSerchValue = searchValue.length;
+      const itemValue = item.name.toLowerCase().slice(0, lenSerchValue);
+      return searchValue === itemValue;
+    });
     setSearchTableRows(results);
   }, [searchValue, tableRows]);
 
