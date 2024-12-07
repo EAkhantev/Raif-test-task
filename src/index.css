@@ -1,0 +1,7 @@
+body {
+  margin: 1rem;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #F5F5F5;
+}

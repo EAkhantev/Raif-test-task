@@ -1,0 +1,9 @@
+#root {
+  width: 75%;
+  padding: 2rem;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  background-color: #FFFFFF;
+}
